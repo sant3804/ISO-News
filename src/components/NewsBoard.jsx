@@ -10,7 +10,8 @@ export const NewsBoard = ({category, theme}) => {
     setLoading(true);
     setError(null);
     
-    let url = `https://newsapi.org/v2/top-headlines?country=us&category=${category}&apiKey=${import.meta.env.VITE_API_KEY}`;
+    // Use Vercel serverless function instead of direct API call
+    let url = `/api/news?category=${category}`;
     
     fetch(url)
       .then(response => response.json())
