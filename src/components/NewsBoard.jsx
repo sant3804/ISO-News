@@ -14,10 +14,18 @@ export const NewsBoard = ({category, theme}) => {
     let url = `/api/news?category=${category}`;
     
     fetch(url)
-      .then(response => response.json())
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
       .then(data => {
         if (data.status === 'ok' && data.articles) {
           setArticles(data.articles);
+        } else if (data.status === 'error') {
+          setError(data.message || 'Failed to fetch news');
+          setArticles([]);
         } else {
           setError(data.message || 'Failed to fetch news');
           setArticles([]);
@@ -26,7 +34,7 @@ export const NewsBoard = ({category, theme}) => {
       })
       .catch(error => {
         console.error("Error fetching news:", error);
-        setError(error.message);
+        setError(error.message || 'Failed to load news');
         setLoading(false);
       });
   }, [category]);
